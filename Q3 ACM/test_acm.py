@@ -40,7 +40,7 @@ if __name__ == '__main__':
     for i in range(len(expected)):
         try:
             acm.main(["input" + str(i) + ".txt", "output" + str(i) + ".txt"])
-            verifyAns("output" +str(i) + ".txt", expected[i])
+            verifyAns("output" + str(i) + ".txt", expected[i])
             print("Test " + str(i) + " OK\n")
         except Exception as e: 
             print("Test " + str(i) + " Fail")
