@@ -58,7 +58,7 @@ class Generator:
         directions = self.generate_directions()
         # generate symbols
         nb_symbols = self.order ** 2 + self.order + 1
-        all_symbols = list(range(nb_symbols))
+        all_symbols = list(range(1, nb_symbols + 1))
         # generate cards
         main_cards = [[] for _ in range(self.order ** 2)]
         extra_cards = [[] for _ in range(self.order + 1)]
