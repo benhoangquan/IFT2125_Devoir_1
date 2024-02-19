@@ -1,21 +1,13 @@
 # Nom, Matricule
 # Nom, Matricule
-
-# cette classe sert a créer les cartes du jeu dans le fichier cartes.txt
 # this class is used to create the game cards in the cartes.txt file
 
-from random import shuffle # pour le melange des symboles sur chaque carte # for mixing symbols on each card
+from random import shuffle  # for mixing symbols on each card
 
 
-# TODO
-# - create nametuple instead of direction[1] and direction[0]
-
-
-class Generator():
+class Generator:
     def __init__(self, order=7):
         self.order = order
-        self.main_cards = [[] for _ in range(order ** 2)]
-        self.extra_cards = [[] for _ in range(self.order + 1)]
 
     def generate_directions(self):
         directions = [(i, 1) for i in range(0, self.order)]
@@ -32,26 +24,24 @@ class Generator():
 
     def group_cards_by_direction(self, direction):
         groups = []
-        sub_group = []
-        start_case = [(i, 0) for i in range(self.order)] if direction != (1, 0) else [(0, i) for i in range(self.order)]
-        # if direction 1, 0 then start case = 0,0; 0,1; 0,2; etc
-        # if other direction then start case = 0,0; 1,0; 2,0; etc
+        sub_group_by_line = []
+        start_case = [(i, 0) for i in range(self.order)] if direction != (1, 0) \
+            else [(0, i) for i in range(self.order)]
 
         for i in range(self.order):
             current_case = start_case[i]
             for j in range(self.order):
                 current_case_idx = self.convert_cartesian_to_index(current_case)
-                sub_group.append(current_case_idx)
+                sub_group_by_line.append(current_case_idx)
                 current_case = self.get_next_cartesian(current_case, direction)
-            groups.append(sub_group.copy())
-            sub_group.clear()
+            groups.append(sub_group_by_line.copy())
+            sub_group_by_line.clear()
 
         return groups
 
-    def assign_symbol_to_group(self, group, symbol):
-        # group example input: [0, 1, 2]
+    def assign_symbol_by_group_to_card(self, symbol, group, cards):
         for i in group:
-            self.main_cards[i].append(symbol)
+            cards[i].append(symbol)
 
     def test_group_cards(self):
         self.order = 3
@@ -66,27 +56,27 @@ class Generator():
 
         # generate directions
         directions = self.generate_directions()
-        nb_directions = len(directions)
         # generate symbols
         nb_symbols = self.order ** 2 + self.order + 1
         all_symbols = list(range(nb_symbols))
         # generate cards
+        main_cards = [[] for _ in range(self.order ** 2)]
+        extra_cards = [[] for _ in range(self.order + 1)]
 
-        # loop in all directions
-        for i in range(nb_directions):
-            direction = directions[i]
-            converging_card = self.extra_cards[i] # reference?
+        # group by directions and loop by direction
+        for i, direction in enumerate(directions):
+            converging_card = extra_cards[i]  # reference?
 
             # group cards by direction
             groups = self.group_cards_by_direction(direction)
             for sub_group in groups:
                 symbol = all_symbols.pop(0)
-                self.assign_symbol_to_group(sub_group, symbol)
+                self.assign_symbol_by_group_to_card(symbol, sub_group, main_cards)
                 converging_card.append(symbol)
 
         # assign the last symbol to the extra_card groups
         symbol = all_symbols.pop(0)
-        for card in self.extra_cards:
+        for card in extra_cards:
             card.append(symbol)
 
         # random mixing of symbols on the cards,
@@ -94,15 +84,16 @@ class Generator():
         # and writing cards in the cards_file file
         to_string = lambda card_list: " ".join(list(map(str, card_list)))
         with open(cards_file, 'w') as f:
-            for card in self.main_cards:
+            for card in main_cards:
                 # convert card to string
-                f.write(f'{to_string(shuffle(card))}\n')
+                shuffle(card)
+                f.write(f'{to_string(card)}\n')
 
-            for card in self.extra_cards:
-                f.write(f'{to_string(shuffle(card))}\n')
-
+            for card in extra_cards:
+                shuffle(card)
+                f.write(f'{to_string(card)}\n')
 
 
 if __name__ == "__main__":
-    g = Generator(3)
+    g = Generator()
     g.generate("test_cartes.txt")
