@@ -1,5 +1,5 @@
-# Nom, Matricule
-# Nom, Matricule
+# Hoang Quan Tran, 20249088
+
 # this class is used to create the game cards in the cartes.txt file
 
 from random import shuffle  # for mixing symbols on each card
@@ -82,7 +82,9 @@ class Generator:
         # random mixing of symbols on the cards,
         # so as not to have repetitions of symbols on the same places on the cards
         # and writing cards in the cards_file file
-        to_string = lambda card_list: " ".join(list(map(str, card_list)))
+        def to_string(card_list):
+            return " ".join(list(map(str, card_list)))
+
         with open(cards_file, 'w') as f:
             for card in main_cards:
                 # convert card to string
