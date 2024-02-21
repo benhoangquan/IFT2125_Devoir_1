@@ -11,7 +11,7 @@ def estimate_range(prime_count):
     for _ in range(10):  # Adjust the number of iterations as needed
         N = prime_count * math.log(N)
 
-    return int(N)
+    return int(N) + 10
 
 
 def test_estimate_range():
@@ -41,6 +41,7 @@ def test_estimate_range():
 
 
 def erastosthene(n, id):
+
     P = [True]*n
     ans = [2]
     for i in range(3,n,2):
@@ -55,7 +56,11 @@ def erastosthene(n, id):
 
 
 def get_nth_prime(nth):
-    return erastosthene(estimate_range(nth), nth)
+    first_prime = [None, 2, 3]
+    if nth < 3:
+        return first_prime[nth]
+    else:
+        return erastosthene(estimate_range(nth), nth)
 
 
 def test_time_get_nth_primes():
@@ -73,4 +78,4 @@ def test_time_get_nth_primes():
 
 
 if __name__ == "__main__":
-    print(get_nth_prime(1000000))
+    test_time_get_nth_primes()
