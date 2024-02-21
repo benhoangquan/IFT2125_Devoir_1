@@ -1,4 +1,5 @@
 # Hoang Quan Tran, 20249088
+# Richard Gu, 20211389
 
 # this class is used to create the game cards in the cartes.txt file
 
@@ -10,30 +11,30 @@ class Generator:
         self.order = order
 
     def generate_directions(self):
-        '''
+        """
         This function generates all possible directions for the projection diagonal.
         :return list of tuples of 2 integers:
 
-        '''
+        """
         directions = [(i, 1) for i in range(0, self.order)]
         directions.append((1, 0))
         return directions
 
     def convert_cartesian_to_index(self, cartesian_tuple):
-        '''
+        """
         This function converts a cartesian point to an index (of 1d array) in the card list.
         :param cartesian_tuple:
         :return:
-        '''
+        """
         return cartesian_tuple[1] * self.order + cartesian_tuple[0]
 
     def get_next_cartesian(self, cartesian_tuple, direction):
-        '''
+        """
         This function returns the next cartesian point after moving in the given direction.
         :param cartesian_tuple:
         :param direction:
         :return next cartesian point as a tuple of 2 integers:
-        '''
+        """
         x = (cartesian_tuple[0] + direction[0]) % self.order
         y = (cartesian_tuple[1] + direction[1]) % self.order
         return x, y
@@ -47,7 +48,7 @@ class Generator:
         assert self.get_next_cartesian((2, 3), (3, 1)) == (0, 4)
 
     def group_cards_by_direction(self, direction):
-        '''
+        """
         This functions groups cards by direction.
         All points in the same lime are grouped into a subgroup together.
         Different subgroups (parallel lines) are grouped into a groups of the same direction.
@@ -55,7 +56,7 @@ class Generator:
         :return:
         2d list of groups of subgroups of cards.
         Each subgroup is a list of points that are in the same line.
-        '''
+        """
         groups = []
         sub_group_by_line = []
         start_case = [(i, 0) for i in range(self.order)] if direction != (1, 0) \
@@ -73,12 +74,12 @@ class Generator:
         return groups
 
     def assign_symbol_by_group_to_card(self, symbol, idx_to_be_assigned, cards):
-        '''
+        """
         This function assigns a symbol to the list of cards using the index from group.
         :param symbol: Symbol to be assigned
         :param idx_to_be_assigned: G
         :param cards:
-        '''
+        """
         for i in idx_to_be_assigned:
             cards[i].append(symbol)
 
@@ -147,10 +148,3 @@ class Generator:
             for card in extra_cards:
                 shuffle(card)
                 f.write(f'{to_string(card)}\n')
-
-
-if __name__ == "__main__":
-    g = Generator()
-    g.test_get_next_cartesian()
-    g.test_group_cards()
-    g.generate("test_cartes.txt")

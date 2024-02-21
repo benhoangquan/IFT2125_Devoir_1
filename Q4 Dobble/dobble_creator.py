@@ -1,5 +1,5 @@
-# Nom, Matricule
-# Nom, Matricule
+# Hoang Quan Tran, 20249088
+# Richard Gu, 20211389
 
 # this class is used to create the game visual cards in the "results" folder
 
@@ -20,6 +20,12 @@ class Creator:
         self.border_size = border_size
 
     def calculate_coordinates(self, cells_per_side, pic_idx):
+        '''
+        Calculate the coordinates for each grid cell in a square grid given the index of the cell.
+        :param cells_per_side:
+        :param pic_idx:
+        :return:
+        '''
         # Calculate the size of a grid cell
         cell_size = self.pic_size / cells_per_side
 
@@ -32,6 +38,14 @@ class Creator:
         return x, y
 
     def make_cards(self, cards_file="test_cartes.txt", verbose=False):
+        """
+        Create the visual cards in png from the cards file and save them in the "results" folder
+        :param cards_file: path to the file containing the cards
+        :param verbose:
+        :return:
+
+        """
+
         if verbose:
             print("***Creation des cartes visuelles***")
 
@@ -56,6 +70,7 @@ class Creator:
                     x, y = self.calculate_coordinates(cells_per_side, idx)
                     pic_to_paste.thumbnail((cell_size, cell_size))
 
+                    # new size while keeping the aspect ratio
                     angle = random.randint(0, 360)
                     new_width = int(abs(pic_to_paste.width * math.cos(angle)) \
                                     + abs(pic_to_paste.height * math.sin(angle)))
@@ -73,8 +88,3 @@ class Creator:
                 background = ImageOps.expand(background, border=self.border_size, fill='black')
                 background.save(f"{output_folder}/card{card_id}.jpg")
                 card_id += 1
-
-
-if __name__ == "__main__":
-    creator = Creator(600)
-    creator.make_cards()
