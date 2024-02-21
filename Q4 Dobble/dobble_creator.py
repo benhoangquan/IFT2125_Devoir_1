@@ -50,7 +50,7 @@ class Creator:
             print("***Creation des cartes visuelles***")
 
         input_folder = "images"
-        output_folder = "test_results"
+        output_folder = "results"
 
         with open(cards_file, "r") as f:
             card_id = 1
@@ -59,7 +59,7 @@ class Creator:
                 pic_id_array = parse_input_array(pic_id_array)
 
                 # create a new background image
-                background = Image.new('RGBA', (self.pic_size, self.pic_size), 'white')
+                background = Image.new('RGB', (self.pic_size, self.pic_size), 'white')
                 for idx, pic_id in enumerate(pic_id_array):
                     # open the image
                     pic_to_paste = Image.open(f'{input_folder}/{pic_id}.png')
