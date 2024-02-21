@@ -71,7 +71,7 @@ class Creator:
 
                     # add border
                 background = ImageOps.expand(background, border=self.border_size, fill='black')
-                background.save(f"{output_folder}/card{card_id}.png")
+                background.save(f"{output_folder}/card{card_id}.jpg")
                 card_id += 1
 
 
