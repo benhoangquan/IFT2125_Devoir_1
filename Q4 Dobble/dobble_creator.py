@@ -37,7 +37,7 @@ class Creator:
 
         return x, y
 
-    def make_cards(self, cards_file="test_cartes.txt", verbose=False):
+    def make_cards(self, cards_file="cartes.txt", verbose=False):
         """
         Create the visual cards in png from the cards file and save them in the "results" folder
         :param cards_file: path to the file containing the cards
@@ -49,8 +49,8 @@ class Creator:
         if verbose:
             print("***Creation des cartes visuelles***")
 
-        input_folder = "images"
-        output_folder = "results"
+        input_folder = "logo_scraper/logos"
+        output_folder = "logo_results"
 
         with open(cards_file, "r") as f:
             card_id = 1
@@ -59,10 +59,10 @@ class Creator:
                 pic_id_array = parse_input_array(pic_id_array)
 
                 # create a new background image
-                background = Image.new('RGB', (self.pic_size, self.pic_size), 'white')
+                image_layer = Image.new('RGBA', (self.pic_size, self.pic_size))
                 for idx, pic_id in enumerate(pic_id_array):
                     # open the image
-                    pic_to_paste = Image.open(f'{input_folder}/{pic_id}.png')
+                    pic_to_paste = Image.open(f'{input_folder}/{pic_id}.png').convert("RGBA")
 
                     # calculate the parameters for image placement, rotation and resizing
                     cells_per_side = math.ceil(math.sqrt(len(pic_id_array)))
@@ -72,19 +72,28 @@ class Creator:
 
                     # new size while keeping the aspect ratio
                     angle = random.randint(0, 360)
-                    new_width = int(abs(pic_to_paste.width * math.cos(angle)) \
-                                    + abs(pic_to_paste.height * math.sin(angle)))
-                    new_height = int(abs(pic_to_paste.height * math.cos(angle)) \
-                                 + abs(pic_to_paste.width * math.sin(angle)))
+                    new_width = int(abs(cell_size * math.cos(angle)) \
+                                    + abs(cell_size * math.sin(angle)))
+                    new_height = int(abs(cell_size * math.cos(angle)) \
+                                 + abs(cell_size * math.sin(angle)))
 
                     # rotation and resize
-                    pic_to_paste = pic_to_paste.rotate(angle, expand=True, resample=Image.BICUBIC)
+                    pic_to_paste = pic_to_paste.rotate(angle, expand=True)
                     pic_to_paste = pic_to_paste.resize((int(new_width), int(new_height)))
 
                     # paste the image
-                    background.paste(pic_to_paste, (x, y), mask=pic_to_paste)
+                    # mask = Image.new("L", pic_to_paste.size, 0)
+                    image_layer.paste(pic_to_paste, (x, y))
 
-                    # add border
+                # add white background
+                background = Image.new('RGBA', image_layer.size, 'white')
+                background.paste(image_layer, mask=image_layer)
+
+                # add border
                 background = ImageOps.expand(background, border=self.border_size, fill='black')
-                background.save(f"{output_folder}/card{card_id}.jpg")
+                background.save(f"{output_folder}/card{card_id}.png")
                 card_id += 1
+
+if __name__ == "__main__":
+    c = Creator(300)
+    c.make_cards("cartes.txt", verbose=True)
